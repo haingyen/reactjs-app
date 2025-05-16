@@ -1,7 +1,7 @@
 0. Security:
 1. Infrastructure:
     - Terraform
-    - AWS: VPC, IGW, SUBNETS, NAT, SG, ROUTES
+    - AWS: VPC, IGW, SUBNETS, NAT, SG, ROUTES, EC2
 3. Deploy:
     - Docker
     - Dockerhub
