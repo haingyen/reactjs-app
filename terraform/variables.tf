@@ -4,10 +4,10 @@ variable "region" {
   default = "ap-southeast-1"
 }
 
-variable "subnet_ids" {
+variable "public_subnet_ids" {
   default = [
-    "subnet-0f8ef88298f686483",  
-    "subnet-0639368dd7ead526f",  
-    "subnet-0356a0b5e39cd1562"  
+    "subnet-09209e4d47bfdb50d",
+    "subnet-08dd699b60bdf7c40",
+    "subnet-0aa79bb707acbf4ba"
   ]
 }

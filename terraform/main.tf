@@ -20,75 +20,19 @@ resource "aws_internet_gateway" "igw" {
 }
 
 # SUBNETS -----------------------------------------------------------------------------------------
-resource "aws_subnet" "private" {
-  vpc_id            = aws_vpc.vpc_swarm_cluster.id
-  cidr_block        = "10.0.0.0/24"
-  availability_zone = "ap-southeast-1a"
-  map_public_ip_on_launch = true  # Cho phép public IP
-
-  tags = {
-    Name = "private-subnet-1"
-  }
-}
-
-# resource "aws_subnet" "public_subnet_zone1" {
-#   vpc_id = aws_vpc.vpc_swarm_cluster.id
-
-#   cidr_block = "10.0.4.0/24"
-#   availability_zone = "ap-southeast-1a"
-#   map_public_ip_on_launch = true
-
-#   tags = {
-#     Name = "public_subnet_zone1"
-#   }
-# }
-
 resource "aws_subnet" "public" {
-  count             = 2
+  count             = 3
   vpc_id            = aws_vpc.vpc_swarm_cluster.id
-  cidr_block        = element(["10.0.4.0/24", "10.0.8.0/24"], count.index)
-  availability_zone = element(["ap-southeast-1a", "ap-southeast-1b"], count.index)
-  map_public_ip_on_launch = true  # Cho phép public IP
+  cidr_block        = element(["10.0.0.0/24", "10.0.4.0/24", "10.0.8.0/24"], count.index)
+  availability_zone = element(["ap-southeast-1a", "ap-southeast-1a", "ap-southeast-1b"], count.index)
+  map_public_ip_on_launch = true 
 
   tags = {
     Name = "public-subnet-${count.index + 1}"
   }
 }
 
-# NAT GATEWAY -------------------------------------------------------------------------------------
-resource "aws_eip" "nat_eip" {
-  domain = "vpc"
-
-  tags = {
-    Name = "nat_eip"
-  }
-}
-
-resource "aws_nat_gateway" "nat" {
-  allocation_id = aws_eip.nat_eip.id
-  subnet_id = aws_subnet.public[0].id
-
-  tags = {
-    Name = "nat_swarm_cluster"
-  }
-
-  depends_on = [ aws_internet_gateway.igw ]
-}
-
 # ROUTES TABLES -----------------------------------------------------------------------------------
-resource "aws_route_table" "private_rtb" {
-  vpc_id = aws_vpc.vpc_swarm_cluster.id
-
-  route {
-    cidr_block = "0.0.0.0/0"
-    gateway_id = aws_nat_gateway.nat.id
-  }
-
-  tags = {
-    Name = "private_rtb"
-  }
-}
-
 resource "aws_route_table" "public_rtb" {
   vpc_id = aws_vpc.vpc_swarm_cluster.id
 
@@ -102,17 +46,8 @@ resource "aws_route_table" "public_rtb" {
   }
 }
 
-resource "aws_route_table_association" "private_for_zone1" {
-  route_table_id = aws_route_table.private_rtb.id
-  subnet_id = aws_subnet.private.id
-}
 
-# resource "aws_route_table_association" "public_for_zone1" {
-#   route_table_id = aws_route_table.public_rtb.id
-#   subnet_id = aws_subnet.public.id
-# }
-
-resource "aws_route_table_association" "public_for_zone2" {
+resource "aws_route_table_association" "public" {
   count = length(aws_subnet.public)
   route_table_id = aws_route_table.public_rtb.id
   subnet_id = aws_subnet.public[count.index].id
@@ -172,29 +107,12 @@ resource "aws_instance" "ec2_instance" {
   count = 3
   ami = "ami-0672fd5b9210aa093"
   instance_type = "t2.micro"
-  subnet_id = element(var.subnet_ids, count.index)
+  subnet_id = element(var.public_subnet_ids, count.index)
   key_name = "main-key"
   user_data = file("install-docker.sh")
   vpc_security_group_ids = [ aws_security_group.sg_for_ec2_instance.id ]
 
   tags = {
-    Name = "Node-${count.index}"
+    Name = "Node-${count.index + 1}"
   }
 }
-
-# resource "tls_private_key" "ec2_key" {
-#   algorithm = "RSA"
-#   rsa_bits  = 4096
-# }
-
-# resource "aws_key_pair" "generated_key" {
-#   key_name   = "auto-generated-key"
-#   public_key = tls_private_key.ec2_key.public_key_openssh
-
-#   provisioner "local-exec" {
-#     command = <<-EOT
-#       echo '${tls_private_key.ec2_key.private_key_pem}' > ./ec2-key.pem
-#       chmod 400 ./ec2-key.pem
-#     EOT
-#   }
-# }
