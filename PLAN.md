@@ -12,6 +12,7 @@
     - Xem Cluster: `docker node ls`
     - Tạo service: `docker service create --name <> --relicas <> -p <>:<> <image>:<tag>`
     - Xem service: `docker service ls`
+    - Deploy lên Swarm: `docker stack deploy -c docker-compose.yml <service_name>`
 4. App:
     - REACTJS
     - Web Server - Nginx
