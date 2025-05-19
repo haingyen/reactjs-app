@@ -10,7 +10,7 @@ RUN npm run build
 # Stage 2: Serve ứng dụng bằng Nginx
 FROM nginx:alpine
 
-COPY --from=builder /app/build /usr/share/nginx/html
+COPY --from=builder /app/dist /usr/share/nginx/html
 
 # Copy cấu hình Nginx tùy chỉnh
 COPY nginx.conf /etc/nginx/conf.d/default.conf
