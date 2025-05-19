@@ -12,7 +12,7 @@ FROM nginx:alpine
 
 COPY --from=builder /app/dist /usr/share/nginx/html
 
-# Copy cấu hình Nginx tùy chỉnh
+# Copy cấu hình Nginx (tùy chỉnh)
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 # Mở port 80
