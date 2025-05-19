@@ -12,7 +12,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/haingyen/swarm.git'
+                git branch: 'main', url: 'https://github.com/haingyen/reactjs-app.git'
             }
         }
         stage('Build Docker Image') {
@@ -39,7 +39,7 @@ pipeline {
 
         stage('Deploy Stack') {
             steps {
-                    sh "docker stack deploy -c docker-compose.yml myapp"
+                    sh "docker stack deploy -c -d docker-compose.yml myapp"
             }
          }
     }
