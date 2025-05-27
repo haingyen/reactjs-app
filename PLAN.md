@@ -21,5 +21,5 @@
 5. Version Control - Github + Webhook
 6. CI/CD Pipeline - Jenkins
     - Jenkins server cùng VPC với Cluster
-    - Jenkins server kết nối với Dockerhub 
+    - Jenkins server kết nối với Dockerhub                                              
     - Jenkins server kết nối với Manager node của Cluster qua Jenkins Agent

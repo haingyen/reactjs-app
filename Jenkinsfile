@@ -5,7 +5,7 @@ pipeline {
     environment {
         DOCKER_HUB_USER = "haingyen"
         DOCKER_REPO = "reactjs-app"
-        DOCKER_TAG = "v1"
+        DOCKER_TAG = "latest"
         DOCKER_IMAGE = "${DOCKER_HUB_USER}/${DOCKER_REPO}:${DOCKER_TAG}"
     }
 
@@ -39,7 +39,7 @@ pipeline {
 
         stage('Deploy Stack') {
             steps {
-                    sh "docker stack deploy -c docker-compose.yml myapp"
+                    sh "docker stack deploy -c docker-compose.yml app"
             }
          }
     }

@@ -22,8 +22,19 @@ resource "aws_route_table_association" "rt_for_jenkins_node" {
   subnet_id = aws_subnet.subnet_for_jenkins_node.id
 }
 
-resource "aws_route_table_association" "rt_for_worker_nodes" {
-  count = length(aws_subnet.subnet_for_worker_nodes)
+resource "aws_route_table_association" "rt_for_node_01" {
   route_table_id = aws_route_table.public_rtb.id
-  subnet_id = aws_subnet.subnet_for_worker_nodes[count.index].id
+  subnet_id = aws_subnet.subnet_for_worker_node_01.id
 }
+
+resource "aws_route_table_association" "rt_for_node_02" {
+  route_table_id = aws_route_table.public_rtb.id
+  subnet_id = aws_subnet.subnet_for_worker_node_02.id
+}
+
+
+# resource "aws_route_table_association" "rt_for_worker_nodes" {
+#   count = length(aws_subnet.subnet_for_worker_nodes)
+#   route_table_id = aws_route_table.public_rtb.id
+#   subnet_id = aws_subnet.subnet_for_worker_nodes[count.index].id
+# }
