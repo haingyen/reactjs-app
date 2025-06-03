@@ -37,8 +37,8 @@ resource "aws_security_group" "sg_for_ec2_instance" {
     from_port = 80 # Cổng ứng dụng chạy trên EC2
     to_port = 80
     protocol = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-    # security_groups = [aws_security_group.alb_sg.id]  # Chỉ cho phép traffic từ ALB
+    # cidr_blocks = ["0.0.0.0/0"]
+    security_groups = [aws_security_group.alb_sg.id]  # Chỉ cho phép traffic từ ALB
   }
   ingress {
     from_port = 443
