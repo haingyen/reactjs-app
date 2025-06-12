@@ -5,7 +5,7 @@ pipeline {
     environment {
         DOCKER_HUB_USER = "haingyen"
         DOCKER_REPO = "reactjs-app"
-        DOCKER_TAG = "0.2"
+        DOCKER_TAG = "0.3"
         DOCKER_IMAGE = "${DOCKER_HUB_USER}/${DOCKER_REPO}:${DOCKER_TAG}"
     }
 
