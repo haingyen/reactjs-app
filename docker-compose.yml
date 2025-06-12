@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   web:
-    image: haingyen/reactjs-app:0.2
+    image: haingyen/reactjs-app:0.3
     deploy:
       replicas: 3
     ports:
