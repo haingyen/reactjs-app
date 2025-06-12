@@ -33,22 +33,47 @@ resource "aws_lb_target_group_attachment" "app_tg_wker2" {
 
 # Tạo Application Load Balancer
 resource "aws_lb" "app_alb" {
-  name               = "app-alb"
+  name               = "app-alb-https"
   internal           = false  # ALB public (truy cập từ Internet)
   load_balancer_type = "application"
   security_groups    = [aws_security_group.alb_sg.id]
   subnets            = [aws_subnet.subnet_for_manager_node.id, aws_subnet.subnet_for_jenkins_node.id]
 
   tags = {
-    Name = "AppALB"
+    Name = "AppALB-HTTPS"
   }
 }
 
-# Tạo Listener cho ALB (HTTP port 80)
+# Tạo Listener cho ALB (HTTP port 80) (chuyển hướng sang HTTPS)
 resource "aws_lb_listener" "http" {
   load_balancer_arn = aws_lb.app_alb.arn
   port              = 80
   protocol          = "HTTP"
+
+  default_action {
+    type = "redirect"
+
+    redirect {
+      port        = "443"
+      protocol    = "HTTPS"
+      status_code = "HTTP_301"
+    }
+  }
+
+  # default_action {
+  #   type             = "forward"
+  #   target_group_arn = aws_lb_target_group.app_tg.arn
+  # }
+}
+
+
+# Listener HTTPS (SSL)
+resource "aws_lb_listener" "https" {
+  load_balancer_arn = aws_lb.app_alb.arn
+  port              = 443
+  protocol          = "HTTPS"
+  ssl_policy        = "ELBSecurityPolicy-TLS13-1-2-2021-06"
+  certificate_arn   = aws_acm_certificate.ssl_cert.arn
 
   default_action {
     type             = "forward"
